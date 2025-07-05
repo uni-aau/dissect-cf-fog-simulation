@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ICUPatientMonitoringSimulation {
+    private final static int PATIENTS_AMOUNT = 3;
+
     public static void main(String[] args) throws IOException {
         SimLogger.setLogging(1, true);
 
@@ -81,7 +83,7 @@ public class ICUPatientMonitoringSimulation {
 
         ArrayList<Device> devices = new ArrayList<>();
 
-        for (int patientId = 1; patientId <= 3; patientId++) {
+        for (int patientId = 1; patientId <= PATIENTS_AMOUNT; patientId++) {
             HashMap<String, Integer> latencyMap = new HashMap<>();
             EnumMap<PowerTransitionGenerator.PowerStateKind, Map<String, PowerState>> transitions =
                     PowerTransitionGenerator.generateTransitions(0.05, 1.0, 1.5, 1, 2);
@@ -114,7 +116,7 @@ public class ICUPatientMonitoringSimulation {
             System.out.println("Created monitoring setup for Patient " + patientId);
         }
 
-        System.out.println("\nStarting Simplified Healthcare Simulation...");
+        System.out.println("\nStarting Healthcare Simulation...");
         System.out.println("Monitoring " + devices.size() + " patients");
         System.out.println("Applications: " +
                 icuFogServer.applications.size() + " (fog) + " +
