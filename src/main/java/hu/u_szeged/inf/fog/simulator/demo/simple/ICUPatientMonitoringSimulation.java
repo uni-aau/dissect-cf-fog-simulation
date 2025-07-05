@@ -56,14 +56,14 @@ public class ICUPatientMonitoringSimulation {
         Instance mediumInstance = new Instance("medium-instance", va, mediumProcessing, 0.05 / 60 / 60 / 1000);
         Instance heavyInstance = new Instance("heavy-instance", va, heavyProcessing, 0.1 / 60 / 60 / 1000);
 
-        Application patientMonitoring = new Application("Patient-Monitoring",
+        Application patientMonitoring = new Application("monitoring-app",
                 30 * 1000, // 30 second cycle
                 500, // 500 bytes data per cycle
                 5000, // 5KB processing per cycle
                 true, // Can migrate
                 new RuntimeAwareApplicationStrategy(0.9, 1.5), mediumInstance);
 
-        Application dataStorage = new Application("Data-Storage",
+        Application dataStorage = new Application("storage-app",
                 5 * 60 * 1000, // 5 minute cycle
                 10000, // 10KB data per cycle
                 50000, // 50KB processing per cycle
