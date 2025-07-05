@@ -82,6 +82,9 @@
         <latency towards="icu-repo" value="4"/>
     </repository>
 
+    <appliance id="temperature-app" startupProcessing="20" networkLoad="1048576" storageLoad="104857600"
+               canShutdown="true"/>
+
     <!-- Patient monitoring application -->
     <appliance id="monitoring-app" startupProcessing="50" networkLoad="1048576" storageLoad="104857600"
                canShutdown="true"/>

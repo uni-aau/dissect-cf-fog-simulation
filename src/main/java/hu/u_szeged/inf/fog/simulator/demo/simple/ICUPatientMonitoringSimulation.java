@@ -59,19 +59,27 @@ public class ICUPatientMonitoringSimulation {
         Application patientMonitoring = new Application("monitoring-app",
                 30 * 1000, // 30 second cycle
                 500, // 500 bytes data per cycle
-                5000, // 5KB processing per cycle
+                5000, // 5000 instructions per task with max size
                 true, // Can migrate
                 new RuntimeAwareApplicationStrategy(0.9, 1.5), mediumInstance);
+
+        Application temperatureMonitoring = new Application("temperature-app",
+                60 * 1000, // 60 second cycle
+                300, // 300 bytes data per cycle
+                4000, // 4000 instructions per task with max size
+                true, // Can migrate
+                new RuntimeAwareApplicationStrategy(0.9, 1.5), lightInstance);
 
         Application dataStorage = new Application("storage-app",
                 5 * 60 * 1000, // 5 minute cycle
                 10000, // 10KB data per cycle
-                50000, // 50KB processing per cycle
+                50000, // 5000 instructions per task with max size
                 true, // Can migrate
                 new RuntimeAwareApplicationStrategy(0.8, 2.0), heavyInstance);
 
         hospitalCloud.addApplication(dataStorage);
         icuFogServer.addApplication(patientMonitoring);
+        icuFogServer.addApplication(temperatureMonitoring);
 
         ArrayList<Device> devices = new ArrayList<>();
 
@@ -87,10 +95,26 @@ public class ICUPatientMonitoringSimulation {
             final Map<String, PowerState> stTransitions = transitions.get(PowerTransitionGenerator.PowerStateKind.storage);
             final Map<String, PowerState> nwTransitions = transitions.get(PowerTransitionGenerator.PowerStateKind.network);
 
-            Repository patientRepo = new Repository(512_000_000L, "patient-repo-" + patientId,
-                    1000, 1000, 1000, latencyMap, stTransitions, nwTransitions); // 512MB storage
-            PhysicalMachine bedsideComputer = new PhysicalMachine(1, 0.001, 1_073_741_824L,
-                    patientRepo, 0, 0, cpuTransitions);
+            Repository patientRepo = new Repository(
+                    512_000_000L, // 512 MB
+                    "patient-repo-" + patientId,
+                    1000,
+                    1000,
+                    1000,
+                    latencyMap,
+                    stTransitions,
+                    nwTransitions
+            ); // 512MB storage
+
+            PhysicalMachine bedsideComputer = new PhysicalMachine(
+                    1,
+                    0.001,
+                    1_073_741_824L, // 1 GB
+                    patientRepo,
+                    0,
+                    0,
+                    cpuTransitions
+            );
 
             GeoLocation bedLocation = new GeoLocation(40.7131 + (patientId * 0.0001), -74.0057 + (patientId * 0.0001));
 
