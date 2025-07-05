@@ -58,22 +58,22 @@ public class ICUPatientMonitoringSimulation {
 
         Application patientMonitoring = new Application("Patient-Monitoring",
                 30 * 1000, // 30 second cycle
-                500, // 500 bytes data
-                5000, // 5KB processing
+                500, // 500 bytes data per cycle
+                5000, // 5KB processing per cycle
                 true, // Can migrate
                 new RuntimeAwareApplicationStrategy(0.9, 1.5), mediumInstance);
 
         Application alertSystem = new Application("Alert-System",
                 10 * 1000, // 10 second cycle
-                200, // 200 bytes data
-                2000, // 2KB processing
+                200, // 200 bytes data per cycle
+                2000, // 2KB processing per cycle
                 false, // Critical - no migration
                 new RuntimeAwareApplicationStrategy(0.99, 1.2), lightInstance);
 
         Application dataStorage = new Application("Data-Storage",
                 5 * 60 * 1000, // 5 minute cycle
-                10000, // 10KB data
-                50000, // 50KB processing
+                10000, // 10KB data per cycle
+                50000, // 50KB processing per cycle
                 true, // Can migrate
                 new RuntimeAwareApplicationStrategy(0.8, 2.0), heavyInstance);
 
@@ -103,7 +103,7 @@ public class ICUPatientMonitoringSimulation {
                     0, // Start immediately
                     8 * 60 * 60 * 1000, // 8 hours operation
                     100, // Full battery
-                    60 * 1000, // 1 minute sensing frequency
+                    30 * 1000, // 30 seconds sensing frequency
                     new StaticMobilityStrategy(bedLocation), // Stationary
                     new RandomDeviceStrategy(), // Random data
                     bedsideComputer,
