@@ -86,10 +86,6 @@
     <appliance id="monitoring-app" startupProcessing="50" networkLoad="1048576" storageLoad="104857600"
                canShutdown="true"/>
 
-    <!-- Critical alert system -->
-    <appliance id="alert-app" startupProcessing="100" networkLoad="2097152" storageLoad="209715200"
-               canShutdown="false"/>
-
     <!-- Data storage application -->
     <appliance id="storage-app" startupProcessing="200" networkLoad="10485760" storageLoad="1073741824"
                canShutdown="true"/>

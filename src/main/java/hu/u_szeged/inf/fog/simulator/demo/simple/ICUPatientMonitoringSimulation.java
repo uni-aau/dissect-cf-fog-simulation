@@ -63,13 +63,6 @@ public class ICUPatientMonitoringSimulation {
                 true, // Can migrate
                 new RuntimeAwareApplicationStrategy(0.9, 1.5), mediumInstance);
 
-        Application alertSystem = new Application("Alert-System",
-                10 * 1000, // 10 second cycle
-                200, // 200 bytes data per cycle
-                2000, // 2KB processing per cycle
-                false, // Critical - no migration
-                new RuntimeAwareApplicationStrategy(0.99, 1.2), lightInstance);
-
         Application dataStorage = new Application("Data-Storage",
                 5 * 60 * 1000, // 5 minute cycle
                 10000, // 10KB data per cycle
@@ -79,7 +72,6 @@ public class ICUPatientMonitoringSimulation {
 
         hospitalCloud.addApplication(dataStorage);
         icuFogServer.addApplication(patientMonitoring);
-        icuFogServer.addApplication(alertSystem);
 
         ArrayList<Device> devices = new ArrayList<>();
 
