@@ -42,13 +42,13 @@ public class ICUPatientMonitoringSimulation {
         AlterableResourceConstraints mediumProcessing = new AlterableResourceConstraints(2, 0.001, 2_147_483_648L); // 2GB RAM for fog processing
         AlterableResourceConstraints heavyProcessing = new AlterableResourceConstraints(4, 0.001, 4_294_967_296L); // 4GB RAM for cloud analytics
 
-        ComputingAppliance hospitalCloud = new ComputingAppliance(cloudfile, "Hospital-Cloud",
+        ComputingAppliance hospitalCloud = new ComputingAppliance(cloudfile, "hospital-server",
                 new GeoLocation(40.7128, -74.0060), 100); // New York Hospital
-        ComputingAppliance icuFogServer = new ComputingAppliance(cloudfile, "ICU-Fog-Server",
+        ComputingAppliance icuFogServer = new ComputingAppliance(cloudfile, "icu-fog-server",
                 new GeoLocation(40.7130, -74.0058), 80); // ICU fog node
 
-        new EnergyDataCollector("Hospital-Cloud", hospitalCloud.iaas, true);
-        new EnergyDataCollector("ICU-Fog-Server", icuFogServer.iaas, true);
+        new EnergyDataCollector("hospital-server", hospitalCloud.iaas, true);
+        new EnergyDataCollector("icu-fog-server", icuFogServer.iaas, true);
 
         icuFogServer.setParent(hospitalCloud, 5); // 5ms latency
 
@@ -85,6 +85,9 @@ public class ICUPatientMonitoringSimulation {
 
         for (int patientId = 1; patientId <= PATIENTS_AMOUNT; patientId++) {
             HashMap<String, Integer> latencyMap = new HashMap<>();
+            latencyMap.put("icu-repo", 2); // 2ms to ICU fog server
+            latencyMap.put("hospital-repo", 7); // 7ms to hospital cloud (5ms + 2ms)
+
             EnumMap<PowerTransitionGenerator.PowerStateKind, Map<String, PowerState>> transitions =
                     PowerTransitionGenerator.generateTransitions(0.05, 1.0, 1.5, 1, 2);
 
