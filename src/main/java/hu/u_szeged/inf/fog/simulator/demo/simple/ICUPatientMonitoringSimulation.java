@@ -38,7 +38,7 @@ public class ICUPatientMonitoringSimulation {
 
         VirtualAppliance va = new VirtualAppliance("healthcare-va", 100, 0, false, 2_147_483_648L); // 2GB storage
 
-        AlterableResourceConstraints lightProcessing = new AlterableResourceConstraints(1, 0.001, 1_073_741_824L); // 1GB RAM for sensors
+        AlterableResourceConstraints lightProcessing = new AlterableResourceConstraints(1, 0.001, 1_073_741_824L); // 1GB RAM for sensors, instructions/tick
         AlterableResourceConstraints mediumProcessing = new AlterableResourceConstraints(2, 0.001, 2_147_483_648L); // 2GB RAM for fog processing
         AlterableResourceConstraints heavyProcessing = new AlterableResourceConstraints(4, 0.001, 4_294_967_296L); // 4GB RAM for cloud analytics
 
@@ -61,7 +61,7 @@ public class ICUPatientMonitoringSimulation {
                 500, // 500 bytes data per cycle
                 5000, // 5000 instructions per task with max size
                 true, // Can migrate
-                new RuntimeAwareApplicationStrategy(0.9, 1.5), mediumInstance);
+                new RuntimeAwareApplicationStrategy(0.9, 1.5), mediumInstance); //  Considers both resource load and latency to ensure efficient data transfer
 
         Application temperatureMonitoring = new Application("temperature-app",
                 60 * 1000, // 60 second cycle
@@ -85,8 +85,6 @@ public class ICUPatientMonitoringSimulation {
 
         for (int patientId = 1; patientId <= PATIENTS_AMOUNT; patientId++) {
             HashMap<String, Integer> latencyMap = new HashMap<>();
-            latencyMap.put("icu-repo", 2); // 2ms to ICU fog server
-            latencyMap.put("hospital-repo", 7); // 7ms to hospital cloud (5ms + 2ms)
 
             EnumMap<PowerTransitionGenerator.PowerStateKind, Map<String, PowerState>> transitions =
                     PowerTransitionGenerator.generateTransitions(0.05, 1.0, 1.5, 1, 2);
@@ -98,7 +96,7 @@ public class ICUPatientMonitoringSimulation {
             Repository patientRepo = new Repository(
                     512_000_000L, // 512 MB
                     "patient-repo-" + patientId,
-                    1000,
+                    1000, // network bandwidth
                     1000,
                     1000,
                     latencyMap,
@@ -123,8 +121,8 @@ public class ICUPatientMonitoringSimulation {
                     8 * 60 * 60 * 1000, // 8 hours operation
                     100, // Full battery
                     30 * 1000, // 30 seconds sensing frequency
-                    new StaticMobilityStrategy(bedLocation), // Stationary
-                    new RandomDeviceStrategy(), // Random data
+                    new StaticMobilityStrategy(bedLocation), //  Device remains stationary at a fixed geographical location
+                    new RandomDeviceStrategy(), //  Finding an application based on random decision
                     bedsideComputer,
                     0.1, // 10% processing load
                     20, // 20ms latency tolerance
